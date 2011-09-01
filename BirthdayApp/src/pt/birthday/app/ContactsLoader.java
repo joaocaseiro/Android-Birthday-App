@@ -117,6 +117,6 @@ public class ContactsLoader {
 	}
 
 	private boolean empty(Cursor cursor) {
-		return cursor.getCount() > 0;
+		return cursor.getCount() <= 0;
 	}
 }

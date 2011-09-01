@@ -2,9 +2,11 @@ package pt.birthday.app.test;
 
 import pt.birthday.app.BirthdayAppActivity;
 import pt.birthday.app.BirthdayAppDatabase;
+import pt.birthday.app.ContactsLoader;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.test.ActivityInstrumentationTestCase2;
+import android.util.Log;
 
 public class BirthdayAppActivityTest extends ActivityInstrumentationTestCase2<BirthdayAppActivity> {
 
@@ -27,6 +29,76 @@ public class BirthdayAppActivityTest extends ActivityInstrumentationTestCase2<Bi
 		deleteRecordFromDatabase(recordID);
 	}
 	
+	public void testLoadInfoFromContacts() {
+		deleteAllRecordsFromDatabase();
+		ContactsLoader contactsLoader = new ContactsLoader();
+		contactsLoader.loadContacts(mActivity);
+		verifyLoadedContacts();
+	}
+	
+	private void verifyLoadedContacts() {
+		BirthdayAppDatabase DB = new BirthdayAppDatabase(mActivity);
+		DB.open();
+		
+		Cursor allEntries = DB.getAllDates();
+		assertEquals(4, allEntries.getCount());
+		
+		String id = BirthdayAppDatabase.getContactIDFromCursor(allEntries);
+		String name = BirthdayAppDatabase.getContactNameFromCursor(allEntries);
+		String number = BirthdayAppDatabase.getContactNumberFromCursor(allEntries);
+		String date = BirthdayAppDatabase.getContactDateFromCursor(allEntries);
+		assertEquals("168", id);
+		assertEquals("Ana Caseiro", name);
+		assertEquals("+351911042670", number);
+		assertEquals("1992-03-12", date);
+		
+		Log.v("", "id: "+id+" name: "+name+" number: "+number+" date: "+date);
+		
+		allEntries.moveToNext();
+		
+		id = BirthdayAppDatabase.getContactIDFromCursor(allEntries);
+		name = BirthdayAppDatabase.getContactNameFromCursor(allEntries);
+		number = BirthdayAppDatabase.getContactNumberFromCursor(allEntries);
+		date = BirthdayAppDatabase.getContactDateFromCursor(allEntries);
+		
+		assertEquals("170", id);
+		assertEquals("Rita Vieira", name);
+		assertEquals("+351913307005", number);
+		assertEquals("1988-01-16", date);
+		
+		Log.v("", "id: "+id+" name: "+name+" number: "+number+" date: "+date);
+		
+		allEntries.moveToNext();
+		
+		id = BirthdayAppDatabase.getContactIDFromCursor(allEntries);
+		name = BirthdayAppDatabase.getContactNameFromCursor(allEntries);
+		number = BirthdayAppDatabase.getContactNumberFromCursor(allEntries);
+		date = BirthdayAppDatabase.getContactDateFromCursor(allEntries);
+		
+		assertEquals("380", id);
+		assertEquals("Joao Caseiro", name);
+		assertEquals("+351912356660", number);
+		assertEquals("1988-03-16", date);
+		
+		Log.v("", "id: "+id+" name: "+name+" number: "+number+" date: "+date);
+		
+		allEntries.moveToNext();
+		
+		id = BirthdayAppDatabase.getContactIDFromCursor(allEntries);
+		name = BirthdayAppDatabase.getContactNameFromCursor(allEntries);
+		number = BirthdayAppDatabase.getContactNumberFromCursor(allEntries);
+		date = BirthdayAppDatabase.getContactDateFromCursor(allEntries);
+		
+		assertEquals("552", id);
+		assertEquals("Andreia Cunha Ferreira", name);
+		assertEquals("+351917038884", number);
+		assertEquals("1988-02-23", date);
+		
+		Log.v("", "id: "+id+" name: "+name+" number: "+number+" date: "+date);
+		
+		DB.close();
+	}
+
 	private void deleteAllRecordsFromDatabase() {
 		BirthdayAppDatabase DB = new BirthdayAppDatabase(mActivity);
 		DB.open();
